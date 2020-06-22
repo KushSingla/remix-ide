@@ -103,9 +103,9 @@ function fileExplorer (localRegistry, files, menuItems) {
   function fileAdded (filepath) {
     self.ensureRoot(() => {
       var folderpath = filepath.split('/').slice(0, -1).join('/')
-
       var currentTree = self.treeView.nodeAt(folderpath)
-      if (currentTree && self.treeView.isExpanded(folderpath)) {
+      if (!self.treeView.isExpanded(folderpath)) self.treeView.expand(folderpath)
+      if (currentTree) {
         self.files.resolveDirectory(folderpath, (error, fileTree) => {
           if (error) console.error(error)
           if (!fileTree) return
@@ -136,7 +136,7 @@ function fileExplorer (localRegistry, files, menuItems) {
         if (!fileTree) return
         fileTree = normalize(folderpath, fileTree)
         self.treeView.updateNodeFromJSON(folderpath, fileTree, true)
-        self.treeview.expand(folderpath)
+        if (!self.treeView.isExpanded(folderpath)) self.treeView.expand(folderpath)
       })
     })
   }
